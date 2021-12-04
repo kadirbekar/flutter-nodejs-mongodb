@@ -19,10 +19,14 @@ class ApiService {
 
   //add new task
   Future<Response> addNewTask(Task task) async {
+    final url = Uri.parse(
+      AppConstants.API_URL + TaskMethodConstants.ADD_NEW_TASK,
+    );
     final request = await http.post(
-        AppConstants.API_URL + TaskMethodConstants.ADD_NEW_TASK,
-        body: jsonEncode(task.toJson()),
-        headers: AppConstants.HEADERS);
+      url,
+      body: jsonEncode(task.toJson()),
+      headers: AppConstants.HEADERS,
+    );
     Response response = Response();
     try {
       if (request.statusCode == 201) {
@@ -37,12 +41,14 @@ class ApiService {
   }
 
   //update task
-  Future<Response> updateTask(String name,String description,String id) async {
-    String json = '{"name" : "$name","description" : "$description","id" : "$id"}';
-    final request = await http.post(
-        AppConstants.API_URL + TaskMethodConstants.UPDATE_TASK,
-        body: json,
-        headers: AppConstants.HEADERS);
+  Future<Response> updateTask(
+      String name, String description, String id) async {
+    final json =
+        '{"name" : "$name","description" : "$description","id" : "$id"}';
+    final url =
+        Uri.parse(AppConstants.API_URL + TaskMethodConstants.UPDATE_TASK);
+    final request =
+        await http.post(url, body: json, headers: AppConstants.HEADERS);
     Response response = Response();
     try {
       if (request.statusCode == 201) {
@@ -56,13 +62,13 @@ class ApiService {
     return response;
   }
 
-   //update task
+  //update task
   Future<Response> deleteTask(String id) async {
     String json = '{"id" : "$id"}';
-    final request = await http.post(
-        AppConstants.API_URL + TaskMethodConstants.DELETE_TASK,
-        body: json,
-        headers: AppConstants.HEADERS);
+    final url =
+        Uri.parse(AppConstants.API_URL + TaskMethodConstants.DELETE_TASK);
+    final request =
+        await http.post(url, body: json, headers: AppConstants.HEADERS);
     Response response = Response();
     try {
       if (request.statusCode == 201) {
@@ -78,18 +84,23 @@ class ApiService {
 
   //get all data
   Future<List<TaskList>> getAllTasks() async {
+    final url = Uri.parse(
+      AppConstants.API_URL + TaskMethodConstants.LIST_ALL_TASKS,
+    );
     final request = await http.get(
-        AppConstants.API_URL + TaskMethodConstants.LIST_ALL_TASKS,
-        headers: AppConstants.HEADERS);
+      url,
+      headers: AppConstants.HEADERS,
+    );
     List<TaskList> tasklist = [];
     try {
       if (request.statusCode == 200) {
         tasklist = taskListFromJson(request.body);
       } else {
         print(request.statusCode);
+        return const [];
       }
     } catch (e) {
-      return List<TaskList>();
+      return const [];
     }
     return tasklist;
   }

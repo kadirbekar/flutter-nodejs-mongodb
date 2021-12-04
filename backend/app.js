@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 //define data type
 app.use(express.json());
 app.use(bodyParser.json());
+
 require("./database/mongoose_db");
 
 const errorMiddleWare = require("./middlewares/error_middleware");

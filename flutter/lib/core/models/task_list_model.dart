@@ -6,11 +6,11 @@ String taskListToJson(List<TaskList> data) => json.encode(List<dynamic>.from(dat
 
 class TaskList {
     TaskList({
-        this.id,
-        this.name,
-        this.description,
-        this.createdDate,
-        this.v,
+        required this.id,
+        required this.name,
+        required this.description,
+        required this.createdDate,
+        required this.v,
     });
 
     String id;

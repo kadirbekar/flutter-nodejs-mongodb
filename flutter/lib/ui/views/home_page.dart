@@ -11,58 +11,66 @@ import '../widgets/default_custom_button.dart';
 import '../widgets/text_form_field.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _descriptionController = TextEditingController();
+  late final _nameController;
+  late final _descriptionController;
   List<TaskList> _taskList = [];
   String _id = "";
 
   @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController();
+    _descriptionController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).requestFocus(FocusNode());
-      },
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: appbar,
-        body: FutureBuilder(
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-                return ErrorOccurred();
-                break;
-              case ConnectionState.active:
-              case ConnectionState.waiting:
-                return Center(child: CircularProgressIndicator(),);
-                break;
-              case ConnectionState.done:
-                _taskList = snapshot.data;
-                return showData;
-                break;
-              default:
-                return ErrorOccurred();
-                break;
-            }
-          },
-          future: ApiService().getAllTasks(),
-        ),
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: appbar,
+      body: FutureBuilder(
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              return ErrorOccurred();
+            case ConnectionState.active:
+            case ConnectionState.waiting:
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            case ConnectionState.done:
+              _taskList = snapshot.data as List<TaskList>;
+              return showData;
+            default:
+              return const ErrorOccurred();
+          }
+        },
+        future: ApiService().getAllTasks(),
       ),
     );
   }
 
-  Widget get appbar => AppBar(
-        title: const Text("Task Manager"),
-        centerTitle: true,
-        backgroundColor: UIColorHelper.DEFAULT_COLOR,
-        
+  PreferredSize get appbar => PreferredSize(
+        preferredSize: Size(double.infinity, 50),
+        child: AppBar(
+          title: const Text("Task Manager"),
+          centerTitle: true,
+          backgroundColor: UIColorHelper.DEFAULT_COLOR,
+        ),
       );
 
   Widget get showData => Column(
@@ -75,38 +83,37 @@ class _HomePageState extends State<HomePage> {
   Widget get newTaskPanel => TaskPanel(
         widget: Expanded(
           child: Padding(
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12),
             child: Column(
               children: <Widget>[
                 MyTextFormField(
                   label: 'Name',
                   controller: _nameController,
+                  nextButton: TextInputAction.next,
                 ),
-                SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(height: 10),
                 MyTextFormField(
                   label: 'Description',
                   controller: _descriptionController,
                   lineCount: 2,
+                  nextButton: TextInputAction.done,
                 ),
-                SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(height: 10),
                 _taskList.length > 0
                     ? Expanded(
                         child: ListView.builder(
                           itemBuilder: (context, index) {
                             return showCard(
-                                index,
-                                _taskList[index].name,
-                                _taskList[index].description,
-                                _taskList[index].id);
+                              index,
+                              _taskList[index].name,
+                              _taskList[index].description,
+                              _taskList[index].id,
+                            );
                           },
                           itemCount: _taskList.length,
                         ),
                       )
-                    : NoSavedData(),
+                    : const NoSavedData(),
               ],
             ),
           ),
@@ -114,14 +121,18 @@ class _HomePageState extends State<HomePage> {
       );
 
   Widget get crudPanel => Padding(
-        padding: EdgeInsets.only(bottom: 15),
+        padding: const EdgeInsets.only(bottom: 15),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[addTaskButton, updateTaskButton],
+          children: <Widget>[
+            Expanded(child: addTaskButton),
+            Expanded(child: updateTaskButton)
+          ],
         ),
       );
 
-  Widget showCard(int index, String name, String description, String id) => GestureDetector(
+  Widget showCard(int index, String name, String description, String id) =>
+      GestureDetector(
         onTap: () {
           _nameController.text = name;
           _descriptionController.text = description;
@@ -151,7 +162,6 @@ class _HomePageState extends State<HomePage> {
 
   Widget get addTaskButton => DefaultRaisedButton(
         height: 55,
-        width: 120,
         color: UIColorHelper.DEFAULT_COLOR,
         label: 'Add',
         onPressed: () async {
@@ -176,9 +186,8 @@ class _HomePageState extends State<HomePage> {
 
   Widget get updateTaskButton => DefaultRaisedButton(
         height: 55,
-        width: 120,
         label: 'Update',
-        color: UIColorHelper.DEFAULT_COLOR,
+        color: Colors.brown,
         onPressed: () async {
           await ApiService()
               .updateTask(
@@ -200,18 +209,18 @@ class _HomePageState extends State<HomePage> {
 }
 
 class TaskPanel extends StatelessWidget {
-  final Widget widget;
+  final Widget? widget;
 
-  const TaskPanel({Key key, this.widget}) : super(key: key);
+  const TaskPanel({Key? key, this.widget}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return widget;
+    return widget ?? const SizedBox.shrink();
   }
 }
 
 class ErrorOccurred extends StatelessWidget {
-  const ErrorOccurred({Key key}) : super(key: key);
+  const ErrorOccurred({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -222,23 +231,25 @@ class ErrorOccurred extends StatelessWidget {
 }
 
 class NoSavedData extends StatelessWidget {
-  const NoSavedData({Key key}) : super(key: key);
+  const NoSavedData({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Icon(
+        const Icon(
           Icons.airline_seat_individual_suite,
           size: 55,
         ),
-        SizedBox(
-          height: 15,
-        ),
+        const SizedBox(height: 15),
         Text(
           MessageConstants.NO_SAVED_DATA,
-          style: TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 24, color: Colors.red),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
+            color: Colors.red,
+          ),
         ),
       ],
     );

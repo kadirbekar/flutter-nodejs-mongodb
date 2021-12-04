@@ -5,7 +5,7 @@ const createError = require("http-errors");
 const addNewTask = async (req, res, next) => {
   const newTask = new Task(req.body);
 
-  const { error, value } = newTask.joiValidation(req.body);
+  const { error } = newTask.joiValidation(req.body);
 
   if (error) {
     return res.status(400).json({
@@ -18,16 +18,16 @@ const addNewTask = async (req, res, next) => {
       if (result) {
         return res.status(201).json({
           result: true,
-          message: "Kayıt başarılı bir şekilde eklenmiştir",
+          message: "New task saved.",
         });
       } else {
         return res.status(400).json({
           result: false,
-          message: "Kayıt eklenirken bir hata oluştu",
+          message: "Something went wrong while saving task.",
         });
       }
-    } catch (error) {
-      next(createError(error));
+    } catch (e) {
+      next(createError(e));
     }
   }
 };
@@ -45,18 +45,18 @@ const updateTask = async (req, res, next) => {
       if (willBeUpdated) {
         return res.status(201).json({
           result: true,
-          message: "Kayıt güncellendi",
+          message: "Task updated.",
         });
       } else {
         return res.status(400).json({
           result: true,
-          message: "Kayıt güncellenirken bir hata oluştu",
+          message: "Something went wrong while updating task.",
         });
       }
     } else {
       return res.status(404).json({
         result: false,
-        message: "Kayıt bulunamadı",
+        message: "No record found.",
       });
     }
   } catch (error) {
@@ -71,12 +71,12 @@ const deleteTask = async (req, res, next) => {
     if (task) {
       return res.status(201).json({
         result: true,
-        message: "Kayıt başarılı bir şekilde silindi",
+        message: "Task deleted.",
       });
     } else {
       return res.status(400).json({
         result: false,
-        message: "Kayıt silinirken bir hata oluştu",
+        message: "Something went wrong while deleting task.",
       });
     }
   } catch (error) {

@@ -1,8 +1,11 @@
 class Task {
-  String name;
-  String description;
+  late String name;
+  late String description;
 
-  Task({this.name, this.description});
+  Task({
+    required this.name,
+    required this.description,
+  });
 
   Task.fromJson(Map<String, dynamic> json) {
     name = json['name'];

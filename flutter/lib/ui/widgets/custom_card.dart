@@ -3,17 +3,18 @@ import 'package:flutter/material.dart';
 import '../common/ui_color_helper.dart';
 
 class CustomCard extends StatelessWidget {
+  const CustomCard({
+    Key? key,
+    required this.index,
+    required this.name,
+    required this.description,
+    required this.function,
+  }) : super(key: key);
+
   final int index;
   final String name;
   final String description;
-  final Function function;
-  const CustomCard(
-      {Key key,
-      @required this.index,
-      @required this.name,
-      @required this.description,
-      this.function})
-      : super(key: key);
+  final void Function() function;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +37,7 @@ class CustomCard extends StatelessWidget {
               color: Colors.red,
               size: 40,
             ),
-            onPressed: this.function,
+            onPressed: function,
           ),
         ),
       ),

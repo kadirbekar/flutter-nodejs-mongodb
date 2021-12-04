@@ -53,7 +53,9 @@ class _HomePageState extends State<HomePage> {
                 child: CircularProgressIndicator(),
               );
             case ConnectionState.done:
-              _taskList = snapshot.data as List<TaskList>;
+              _taskList = snapshot.data != null
+                  ? snapshot.data as List<TaskList>
+                  : const [];
               return showData;
             default:
               return const ErrorOccurred();
@@ -187,7 +189,7 @@ class _HomePageState extends State<HomePage> {
   Widget get updateTaskButton => DefaultRaisedButton(
         height: 55,
         label: 'Update',
-        color: Colors.brown,
+        color: Colors.cyanAccent,
         onPressed: () async {
           await ApiService()
               .updateTask(

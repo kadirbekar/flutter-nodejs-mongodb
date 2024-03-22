@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Joi = require("@hapi/joi");
+const Joi = require("joi");
 const Schema = mongoose.Schema;
 
 //define task model restrictions

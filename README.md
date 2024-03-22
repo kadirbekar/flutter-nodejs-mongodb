@@ -1,4 +1,11 @@
 # flutter-nodejs-mongodb
+
+23.03.2024 -> 
+
+- SDK version updated to '>=3.3.0 <4.0.0'
+- Flutter packages updated to the latest packages
+- Npm packages updated to the latest packages
+
 Let's integrate our back-end solution into flutter app
 
 ![node](https://user-images.githubusercontent.com/34074484/87217730-2a726d00-c355-11ea-9a59-f2dcc61c04d0.png)

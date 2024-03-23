@@ -3,8 +3,8 @@
 23.03.2024 -> 
 
 - SDK version updated to '>=3.3.0 <4.0.0'
-- Flutter packages updated to the latest packages
-- Npm packages updated to the latest packages
+- Flutter packages updated to the latest versions
+- Npm packages updated to the latest versions
 
 Let's integrate our back-end solution into flutter app
 
